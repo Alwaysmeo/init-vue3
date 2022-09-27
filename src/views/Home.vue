@@ -6,10 +6,13 @@
         <a href="https://vuejs.org/" target="_blank">
             <img src="@/assets/vue.svg" class="logo vue" alt="Vue logo" />
         </a>
+        <HelloWorld msg="Welcome to Your Vue.js + Vite App" />
     </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { HelloWorld } from '@components'
+</script>
 
 <style scoped>
 .logo {
