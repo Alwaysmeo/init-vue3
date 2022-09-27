@@ -1,7 +1,6 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
-import { SERVER_API, LOCAL_HOST, PORT, HMR_OVERLAY } from './src/config/local'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -13,7 +12,6 @@ export default defineConfig(({ mode }) => {
                 '@assets': resolve(__dirname, 'src/assets'),
                 '@image': resolve(__dirname, 'src/assets/image'),
                 '@components': resolve(__dirname, 'src/components'),
-                '@config': resolve(__dirname, 'src/config'),
                 '@utils': resolve(__dirname, 'src/utils'),
                 vue: 'vue/dist/vue.esm-bundler.js',
             },
@@ -26,20 +24,22 @@ export default defineConfig(({ mode }) => {
                 },
             },
         },
+        build: {
+            outDir: 'dist', //构建打包输出目录
+        },
         server: {
-            host: LOCAL_HOST || 'localhost',
-            port: PORT,
-            strictPort: false, // 是否强制使用指定端口，默认为 false
+            host: 'localhost',
+            port: Number(loadEnv(mode, process.cwd()).VITE_APP_PORT),
+            strictPort: false, // 是否强制使用指定端口号
+            open: false, // 服务启动时是否自动打开浏览器
+            https: false, // 是否开启 https
+            cors: true, // 允许跨域
+            hmr: true, // 热更新
             proxy: {
                 '^/(api)': {
-                    target: SERVER_API,
+                    target: loadEnv(mode, process.cwd()).VITE_APP_BASE_API,
                     changeOrigin: true,
                 },
-            },
-            hmr: {
-                overlay: HMR_OVERLAY,
-                host: LOCAL_HOST || 'localhost',
-                port: PORT,
             },
         },
     }
